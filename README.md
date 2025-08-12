@@ -2,7 +2,7 @@ This is an application for reviewing interesting destination around the world
 
 ## Getting Started
 
-First, please make sure that nodejs is already installed to your local:
+First, please make sure that nodejs is already installed to your local. If not, please visit https://nodejs.org/en/download:
 
 ```bash
 npm install
