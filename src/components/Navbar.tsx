@@ -13,7 +13,7 @@ const Navbar = () => {
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                         <li><Link href="/review">Review</Link></li>
-                        <li><Link href="/history">History</Link></li>
+                        {/* <li><Link href="/history">History</Link></li> */}
                     </ul>
                 </div>
                 <Link href="/review" className="btn btn-ghost text-xl">DaisyReview</Link>
@@ -21,7 +21,7 @@ const Navbar = () => {
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
                     <li><Link href="/review">Review</Link></li>
-                    <li><Link href="/history">History</Link></li>
+                    {/* <li><Link href="/history">History</Link></li> */}
                 </ul>
             </div>
         </div>
