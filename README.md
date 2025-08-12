@@ -9,3 +9,5 @@ npm install
 
 npm run dev
 ```
+
+Or please visit my app at https://daisy-review.vercel.app/review
