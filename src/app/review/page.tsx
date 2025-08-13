@@ -20,6 +20,7 @@ interface Comment {
     created_date: Date,
     modified_date: Date,
     isStillEdit: boolean | false,
+    newComment: string | ""
 }
 
 const Review = () => {
@@ -51,7 +52,7 @@ const Review = () => {
             console.error(error);
         } else {
             setLocationList(data);
-            console.log(data)
+            // console.log(data)
         }
     }
     useEffect(() => {
@@ -66,8 +67,11 @@ const Review = () => {
         if (error) {
             console.error(error);
         } else {
+            for (let i = 0; i < data.length; i++) {
+                data[i].newComment = data[i].comment
+            }
             setCommentList(data)
-            console.log(data)
+            // console.log(data)
         }
     }
     useEffect(() => {
@@ -112,7 +116,7 @@ const Review = () => {
 
     const handleChangeNewComment = (e: ChangeEvent<HTMLInputElement>, index: number) => {
         let newArr = [...commentList]
-        newArr[index].comment = e.target.value
+        newArr[index].newComment = e.target.value
         setCommentList(newArr)
     }
 
@@ -123,20 +127,26 @@ const Review = () => {
     }
 
     const saveEditedComment = async (index: number) => {
-        let newComment: string = commentList[index].comment
+        let newComment: string = commentList[index].newComment
 
         const { error } = await supabase
             .from('Review')
             .update({ comment: newComment })
             .eq('id', commentList[index].id);
 
-        if (!error){
+        if (!error) {
             fetchCommetList()
-        }else {
-            console.log(error)
+        } else {
+            // console.log(error)
         }
     }
 
+    const cancelEditComment = async (index: number) => {
+        let newArr = [...commentList]
+        newArr[index].isStillEdit = false
+        newArr[index].newComment = newArr[index].comment
+        setCommentList(newArr)
+    }
 
     return (
         <div className="relative">
@@ -181,8 +191,7 @@ const Review = () => {
                                             {
                                                 item.isStillEdit ?
                                                     <input type="text" className="input" placeholder=""
-                                                        defaultValue={item.comment}
-                                                        value={item.comment}
+                                                        value={item.newComment}
                                                         onChange={(e) => handleChangeNewComment(e, index)}
                                                     /> :
                                                     <p className="list-col-wrap text-xs">
@@ -193,9 +202,15 @@ const Review = () => {
 
                                         {
                                             item.isStillEdit ?
-                                                <button className="btn btn-dash btn-secondary" onClick={() => saveEditedComment(index)}>
-                                                    save
-                                                </button> :
+                                                <>
+                                                    <button className="btn btn-dash btn-secondary" onClick={() => saveEditedComment(index)}>
+                                                        save
+                                                    </button>
+                                                    <button className="btn btn-dash btn-secondary" onClick={() => cancelEditComment(index)}>
+                                                        cancel
+                                                    </button>
+                                                </>
+                                                :
                                                 <>
                                                     <button className="btn btn-dash btn-info" onClick={() => editComment(index)}>
                                                         edit
