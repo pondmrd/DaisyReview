@@ -111,9 +111,9 @@ const Review = () => {
 
 
     return (
-        <div>
+        <div className="relative">
             <Navbar />
-            <div className="w-xl md:w-3xl lg:w-5xl mx-auto flex flex-wrap justify-items-stretch gap-4 mt-4 mb-4">
+            <div className="relative w-xl md:w-3xl lg:w-5xl mx-auto flex flex-wrap justify-items-stretch gap-4 mt-4 mb-4">
                 {locationList.map(item => (
                     <div key={item.id}>
                         <div className="card bg-base-100 w-60 shadow-sm border-1 border-dashed">
