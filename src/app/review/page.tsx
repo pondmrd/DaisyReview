@@ -18,7 +18,8 @@ interface Comment {
     comment: string,
     created_by: string,
     created_date: Date,
-    modified_date: Date
+    modified_date: Date,
+    isStillEdit: boolean | false,
 }
 
 const Review = () => {
@@ -109,6 +110,33 @@ const Review = () => {
         }
     }
 
+    const handleChangeNewComment = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+        let newArr = [...commentList]
+        newArr[index].comment = e.target.value
+        setCommentList(newArr)
+    }
+
+    const editComment = (index: number) => {
+        let newArr = [...commentList]
+        newArr[index].isStillEdit = true
+        setCommentList(newArr)
+    }
+
+    const saveEditedComment = async (index: number) => {
+        let newComment: string = commentList[index].comment
+
+        const { error } = await supabase
+            .from('Review')
+            .update({ comment: newComment })
+            .eq('id', commentList[index].id);
+
+        if (!error){
+            fetchCommetList()
+        }else {
+            console.log(error)
+        }
+    }
+
 
     return (
         <div className="relative">
@@ -142,20 +170,41 @@ const Review = () => {
                         </div>
 
                         <div>
-                            {commentList.map(item => (
+                            {commentList.map((item, index) => (
                                 <ul className="list bg-base-100 rounded-box shadow-md" key={item.id}>
                                     <li className="list-row">
                                         <div><img className="size-10 rounded-box" src="/qoobee.jpg" /></div>
                                         <div>
                                             <div>{item.created_by}</div>
                                             <div className="text-xs uppercase font-semibold opacity-60">Guest</div>
+                                            <br />
+                                            {
+                                                item.isStillEdit ?
+                                                    <input type="text" className="input" placeholder=""
+                                                        defaultValue={item.comment}
+                                                        value={item.comment}
+                                                        onChange={(e) => handleChangeNewComment(e, index)}
+                                                    /> :
+                                                    <p className="list-col-wrap text-xs">
+                                                        {item.comment}
+                                                    </p>
+                                            }
                                         </div>
-                                        <p className="list-col-wrap text-xs">
-                                            {item.comment}
-                                        </p>
-                                        <button className="btn btn-dash btn-error" onClick={() => deleteComment(item.id)}>
-                                            remove
-                                        </button>
+
+                                        {
+                                            item.isStillEdit ?
+                                                <button className="btn btn-dash btn-secondary" onClick={() => saveEditedComment(index)}>
+                                                    save
+                                                </button> :
+                                                <>
+                                                    <button className="btn btn-dash btn-info" onClick={() => editComment(index)}>
+                                                        edit
+                                                    </button>
+                                                    <button className="btn btn-dash btn-error" onClick={() => deleteComment(item.id)}>
+                                                        remove
+                                                    </button>
+                                                </>
+                                        }
                                     </li>
                                 </ul>
                             ))}
