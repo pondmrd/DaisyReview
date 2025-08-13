@@ -115,13 +115,13 @@ const Review = () => {
     }
 
     const handleChangeNewComment = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-        let newArr = [...commentList]
+        const newArr = [...commentList]
         newArr[index].newComment = e.target.value
         setCommentList(newArr)
     }
 
     const editComment = (index: number) => {
-        let newArr = [...commentList]
+        const newArr = [...commentList]
         newArr[index].isStillEdit = true
         setCommentList(newArr)
     }
@@ -142,7 +142,7 @@ const Review = () => {
     }
 
     const cancelEditComment = async (index: number) => {
-        let newArr = [...commentList]
+        const newArr = [...commentList]
         newArr[index].isStillEdit = false
         newArr[index].newComment = newArr[index].comment
         setCommentList(newArr)
