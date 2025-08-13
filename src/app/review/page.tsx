@@ -163,13 +163,13 @@ const Review = () => {
             {
                 isOpenWatchReviewModal ? <div className="modal modal-open">
                     <div className="modal-box w-11/12 max-w-5xl min-h-100 p-0 max-h-100" >
-                        <div className="flex justify-between items-center sticky top-0 z-1 bg-white p-5">
+                        <div className="flex justify-between items-center sticky top-0 z-1 bg-white p-5 pb-0">
                             <p></p>
                             <h3 className="font-bold text-lg">Watch Review</h3>
                             <button className="btn btn-circle" onClick={handleCloseWatchReviewModal}>X</button>
                         </div>
 
-                        <div>
+                        <div className="p-5">
                             {commentList.map((item, index) => (
                                 <ul className="list bg-base-100 rounded-box shadow-md" key={item.id}>
                                     <li className="list-row">
