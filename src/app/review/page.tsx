@@ -127,7 +127,7 @@ const Review = () => {
     }
 
     const saveEditedComment = async (index: number) => {
-        let newComment: string = commentList[index].newComment
+        const newComment: string = commentList[index].newComment
 
         const { error } = await supabase
             .from('Review')
