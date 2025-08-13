@@ -162,8 +162,8 @@ const Review = () => {
             </div>
             {
                 isOpenWatchReviewModal ? <div className="modal modal-open">
-                    <div className="modal-box w-11/12 max-w-5xl min-h-100" >
-                        <div className="flex justify-between items-center">
+                    <div className="modal-box w-11/12 max-w-5xl min-h-100 p-0 max-h-100" >
+                        <div className="flex justify-between items-center sticky top-0 z-1 bg-white p-5">
                             <p></p>
                             <h3 className="font-bold text-lg">Watch Review</h3>
                             <button className="btn btn-circle" onClick={handleCloseWatchReviewModal}>X</button>
