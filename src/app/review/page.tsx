@@ -131,7 +131,7 @@ const Review = () => {
 
         const { error } = await supabase
             .from('Review')
-            .update({ comment: newComment })
+            .update({ comment: newComment, modified_date: new Date() })
             .eq('id', commentList[index].id);
 
         if (!error) {
