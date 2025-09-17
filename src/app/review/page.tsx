@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect, ChangeEvent } from "react"
 import Image from "next/image";
-import { supabase } from '@/config/supabaseClient'
 
 import Navbar from "@/components/Navbar"
 
@@ -27,6 +26,7 @@ const Review = () => {
     const [isOpenWatchReviewModal, setIsOpenWatchReviewModal] = useState(false)
     const handleOpenWatchReviewModal = (location_Id: number) => {
         setIsOpenWatchReviewModal(true)
+        setIsOpenWatchReviewModal(true)
         setLocationId(location_Id)
     }
     const handleCloseWatchReviewModal = () => {
@@ -35,6 +35,7 @@ const Review = () => {
 
     const [isOpenAddReviewModal, setIsOpenAddReviewModal] = useState(false)
     const handleOpenAddReviewModal = (location_Id: number) => {
+        setIsOpenAddReviewModal(true)
         setIsOpenAddReviewModal(true)
         setLocationId(location_Id)
         setComment("")
@@ -47,13 +48,8 @@ const Review = () => {
 
     const [locationList, setLocationList] = useState<Location[]>([])
     const fetchLocation = async () => {
-        const { data, error } = await supabase.from("Location").select("*").order("id");
-        if (error) {
-            console.error(error);
-        } else {
-            setLocationList(data);
-            // console.log(data)
-        }
+        const locationListJson = await fetch('/api/review/get-location').then(res => res.json())
+        setLocationList(locationListJson)
     }
     useEffect(() => {
         fetchLocation()
@@ -61,22 +57,17 @@ const Review = () => {
 
     const [locationId, setLocationId] = useState<number>(0)
     const [commentList, setCommentList] = useState<Comment[]>([])
-    const fetchCommetList = async () => {
-        const { data, error } = await supabase.from("Review").select("*").eq("location_id", locationId).order("id");
-
-        if (error) {
-            console.error(error);
-        } else {
-            for (let i = 0; i < data.length; i++) {
-                data[i].newComment = data[i].comment
-            }
-            setCommentList(data)
-            // console.log(data)
-        }
+    const fetchCommentList = async () => {
+        const reviewJson = await fetch("/api/review/get-review-by-location", {
+            method: "POST",
+            headers: { 'Content-Type': "application/json" },
+            body: JSON.stringify({ locationId })
+        }).then(res => res.json())
+        setCommentList(reviewJson)
     }
     useEffect(() => {
         if (isOpenWatchReviewModal) {
-            fetchCommetList()
+            fetchCommentList()
         }
     }, [isOpenWatchReviewModal])
 
@@ -98,19 +89,30 @@ const Review = () => {
             setValidateMsg("Please input comment or name.")
             return
         }
-        const { error } = await supabase.from("Review").insert([{ location_id: locationId, comment: comment, created_by: actionBy, created_date: new Date(), modified_date: new Date() }]);
-        if (error) console.error(error);
+        const response = await fetch("/api/review/add-review", {
+            method: "POST",
+            headers: { 'Content-Type': "application/json" },
+            body: JSON.stringify({ locationId, comment, actionBy })
+        }).then(res => res.json())
 
-        handleCloseAddReviewModal()
-        setComment("")
-        setActionBy("")
+        if (!response.errMsg) {
+            handleCloseAddReviewModal()
+            setComment("")
+            setActionBy("")
+        } else {
+            setValidateMsg(response.errMsg)
+        }
     }
 
     const deleteComment = async (id: number) => {
-        const { error } = await supabase.from("Review").delete().eq("id", id);
-        if (error) console.error(error);
-        else {
-            fetchCommetList()
+        const response = await fetch("/api/review/delete-review", {
+            method: "POST",
+            headers: { 'Content-Type': "application/json" },
+            body: JSON.stringify({ id })
+        }).then(res => res.json())
+
+        if (!response.errMsg){
+            fetchCommentList()
         }
     }
 
@@ -123,19 +125,21 @@ const Review = () => {
     const editComment = (index: number) => {
         const newArr = [...commentList]
         newArr[index].isStillEdit = true
+        newArr[index].newComment = newArr[index].comment
         setCommentList(newArr)
     }
 
     const saveEditedComment = async (index: number) => {
         const newComment: string = commentList[index].newComment
 
-        const { error } = await supabase
-            .from('Review')
-            .update({ comment: newComment, modified_date: new Date() })
-            .eq('id', commentList[index].id);
+        const response = await fetch("/api/review/edit-review", {
+            method: "POST",
+            headers: { 'Content-Type': "application/json" },
+            body: JSON.stringify({ comment: newComment, id: commentList[index].id })
+        }).then(res => res.json())
 
-        if (!error) {
-            fetchCommetList()
+        if (!response.errMsg) {
+            fetchCommentList()
         } else {
             // console.log(error)
         }
