@@ -58,6 +58,7 @@ const Review = () => {
     const [locationId, setLocationId] = useState<number>(0)
     const [commentList, setCommentList] = useState<Comment[]>([])
     const fetchCommentList = async () => {
+        setCommentList([])
         const reviewJson = await fetch("/api/review/get-review-by-location", {
             method: "POST",
             headers: { 'Content-Type': "application/json" },
