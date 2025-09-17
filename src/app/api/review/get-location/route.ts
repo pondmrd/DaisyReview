@@ -2,7 +2,7 @@ import db from '@/config/sqlite';
 import { NextResponse } from 'next/server';
 
 
-export function GET() {
-  const locations = db.prepare('SELECT * FROM Location').all();
-  return NextResponse.json(locations);
+export async function GET() {
+  const locations = await db.execute('SELECT * FROM Location');
+  return NextResponse.json(locations.rows);
 }
